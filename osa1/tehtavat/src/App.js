@@ -1,19 +1,24 @@
 import {useState} from "react";
 
 const App = () => {
-    // tallenna napit omaan tilaansa
-    const [good, setGood] = useState(0)
-    const [neutral, setNeutral] = useState(0)
-    const [bad, setBad] = useState(0)
+    const anecdotes = [
+        'If it hurts, do it more often.',
+        'Adding manpower to a late software project makes it later!',
+        'The first 90 percent of the code accounts for the first 90 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.',
+        'Any fool can write code that a computer can understand. Good programmers write code that humans can understand.',
+        'Premature optimization is the root of all evil.',
+        'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.',
+        'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when dianosing patients.'
+    ]
+
+    const [selected, setSelected] = useState(0)
+
+    const getRandomNumberBetween = (min, max) => Math.floor(Math.random() * (max - min) + min);
 
     return (
         <div>
-            <Teksti text={'give feedback'} bold={true}/>
-            <Button name={'good'} handleClick={() => setGood(good + 1)}/>
-            <Button name={'neutral'} handleClick={() => setNeutral(neutral + 1)}/>
-            <Button name={'bad'} handleClick={() => setBad(bad + 1)}/>
-            <Teksti text={'Statistics'} tyyppi={'bold'}/>
-            <Statistics good={good} neutral={neutral} bad={bad}/>
+            {anecdotes[selected]}
+            <Button name={'nexanecdote'} handleClick={() => setSelected(getRandomNumberBetween(0, 7))} />
         </div>
     )
 }
@@ -21,46 +26,4 @@ const App = () => {
 
 export default App;
 
-const Statistics = ({good, neutral, bad}) => {
-    const all = () => good + neutral + bad
-    const average = () => (good - bad) / all()
-    const positive = () => (good / all()) * 100
-
-    return all() === 0
-        ? <Teksti text={'No feedback given'} tyyppi={'newLine'}/>
-        : <table>
-            <tbody>
-            <tr>
-                <td><StatisticLine text={'good'} value={good}/></td>
-            </tr>
-            <tr>
-                <td><StatisticLine text={'neutral'} value={neutral}/></td>
-            </tr>
-            <tr>
-                <td><StatisticLine text={'bad'} value={bad}/></td>
-            </tr>
-            <tr>
-                <td><Teksti text={'all ' + all()} tyyppi={'newLine'}/></td>
-            </tr>
-            <tr>
-                <td><Teksti text={'average ' + average()} tyyppi={'newLine'}/></td>
-            </tr>
-            <tr>
-                <td><Teksti text={'positive ' + positive() + ' %'} tyyppi={'newLine'}/></td>
-            </tr>
-            </tbody>
-        </table>
-
-}
-
-const Teksti = ({text, tyyppi}) => {
-    if (tyyppi === 'bold') return <h1>{text}</h1>
-    else if (tyyppi === 'newLine') return <div>{text}</div>
-    else return <span>{text}</span>
-}
-
-const Button = ({name, handleClick}) => <button onClick={() => handleClick()}> {name} </button>
-
-
-const StatisticLine = ({text, value}) =>
-    <Teksti text={text + ' ' + value} tyyppi={'newLine'}/>
+const Button = ({name, handleClick}) => <div><button onClick={() => handleClick()}> {name} </button></div>
