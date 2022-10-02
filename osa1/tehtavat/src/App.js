@@ -10,15 +10,33 @@ const App = () => {
         'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.',
         'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when dianosing patients.'
     ]
+    const anecdotesNew = {...anecdotes.map(x => {
+            return {text: x, vote: 0}
+        })}
 
     const [selected, setSelected] = useState(0)
-
+    const [anecdotesObject, setAnecdotesObject] = useState(anecdotesNew)
+    
     const getRandomNumberBetween = (min, max) => Math.floor(Math.random() * (max - min) + min);
+
+    const handleVotes = (key) => {
+        const copy = {...anecdotesObject}
+        const vote = copy[key].vote
+        copy[key].vote = vote +1
+        setAnecdotesObject(copy)
+    }
 
     return (
         <div>
-            {anecdotes[selected]}
+            {anecdotesObject[selected].text}
+            <div>
+                 {'has ' + anecdotesObject[selected].vote + ' votes '}
+            </div>
+
+            <div>
+            <Button name={'vote'} handleClick={() => handleVotes(selected)} />
             <Button name={'nexanecdote'} handleClick={() => setSelected(getRandomNumberBetween(0, 7))} />
+            </div>
         </div>
     )
 }
@@ -26,4 +44,4 @@ const App = () => {
 
 export default App;
 
-const Button = ({name, handleClick}) => <div><button onClick={() => handleClick()}> {name} </button></div>
+const Button = ({name, handleClick}) => <button onClick={() => handleClick()}> {name} </button>
