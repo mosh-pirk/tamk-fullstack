@@ -29,9 +29,9 @@ const Statistics = ({good, neutral, bad}) => {
     return all() === 0
         ? <Teksti text={'No feedback given'} tyyppi={'newLine'}/>
         : <div>
-            <Teksti text={'good ' + good} tyyppi={'newLine'}/>
-            <Teksti text={'neutral ' + neutral} tyyppi={'newLine'}/>
-            <Teksti text={'bad ' + bad} tyyppi={'newLine'}/>
+            <StatisticLine text={'good'} value={good} />
+            <StatisticLine text={'neutral'} value={neutral} />
+            <StatisticLine text={'bad'} value={bad} />
             <Teksti text={'all ' + all()} tyyppi={'newLine'}/>
             <Teksti text={'average ' + average()} tyyppi={'newLine'}/>
             <Teksti text={'positive ' + positive() + ' %'} tyyppi={'newLine'}/>
@@ -45,6 +45,8 @@ const Teksti = ({text, tyyppi}) => {
     else return <span>{text}</span>
 }
 
-const Button = ({name, handleClick}) => {
-    return <button onClick={() => handleClick()}> {name} </button>
-}
+const Button = ({name, handleClick}) => <button onClick={() => handleClick()}> {name} </button>
+
+
+const StatisticLine = ({text, value}) =>
+    <Teksti text={text + ' ' + value} tyyppi={'newLine'} />
