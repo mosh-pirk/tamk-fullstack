@@ -28,14 +28,28 @@ const Statistics = ({good, neutral, bad}) => {
 
     return all() === 0
         ? <Teksti text={'No feedback given'} tyyppi={'newLine'}/>
-        : <div>
-            <StatisticLine text={'good'} value={good} />
-            <StatisticLine text={'neutral'} value={neutral} />
-            <StatisticLine text={'bad'} value={bad} />
-            <Teksti text={'all ' + all()} tyyppi={'newLine'}/>
-            <Teksti text={'average ' + average()} tyyppi={'newLine'}/>
-            <Teksti text={'positive ' + positive() + ' %'} tyyppi={'newLine'}/>
-        </div>
+        : <table>
+            <tbody>
+            <tr>
+                <td><StatisticLine text={'good'} value={good}/></td>
+            </tr>
+            <tr>
+                <td><StatisticLine text={'neutral'} value={neutral}/></td>
+            </tr>
+            <tr>
+                <td><StatisticLine text={'bad'} value={bad}/></td>
+            </tr>
+            <tr>
+                <td><Teksti text={'all ' + all()} tyyppi={'newLine'}/></td>
+            </tr>
+            <tr>
+                <td><Teksti text={'average ' + average()} tyyppi={'newLine'}/></td>
+            </tr>
+            <tr>
+                <td><Teksti text={'positive ' + positive() + ' %'} tyyppi={'newLine'}/></td>
+            </tr>
+            </tbody>
+        </table>
 
 }
 
@@ -49,4 +63,4 @@ const Button = ({name, handleClick}) => <button onClick={() => handleClick()}> {
 
 
 const StatisticLine = ({text, value}) =>
-    <Teksti text={text + ' ' + value} tyyppi={'newLine'} />
+    <Teksti text={text + ' ' + value} tyyppi={'newLine'}/>
