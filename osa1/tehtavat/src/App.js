@@ -12,7 +12,8 @@ const App = () => {
             <Button name={'good'} handleClick={() => setGood(good + 1)}/>
             <Button name={'neutral'} handleClick={() => setNeutral(neutral + 1)}/>
             <Button name={'bad'} handleClick={() => setBad(bad + 1)}/>
-            <Statistics good={good} neutral={neutral} bad={bad} />
+            <Teksti text={'Statistics'} tyyppi={'bold'}/>
+            <Statistics good={good} neutral={neutral} bad={bad}/>
         </div>
     )
 }
@@ -25,15 +26,16 @@ const Statistics = ({good, neutral, bad}) => {
     const average = () => (good - bad) / all()
     const positive = () => (good / all()) * 100
 
-    return <div>
-        <Teksti text={'statics'} tyyppi={'bold'}/>
-        <Teksti text={'good ' + good} tyyppi={'newLine'}/>
-        <Teksti text={'neutral ' + neutral} tyyppi={'newLine'}/>
-        <Teksti text={'bad ' + bad} tyyppi={'newLine'}/>
-        <Teksti text={'all ' + all()} tyyppi={'newLine'}/>
-        <Teksti text={'average ' + average()} tyyppi={'newLine'}/>
-        <Teksti text={'positive ' + positive()} tyyppi={'newLine'}/>
-    </div>
+    return all() === 0
+        ? <Teksti text={'No feedback given'} tyyppi={'newLine'}/>
+        : <div>
+            <Teksti text={'good ' + good} tyyppi={'newLine'}/>
+            <Teksti text={'neutral ' + neutral} tyyppi={'newLine'}/>
+            <Teksti text={'bad ' + bad} tyyppi={'newLine'}/>
+            <Teksti text={'all ' + all()} tyyppi={'newLine'}/>
+            <Teksti text={'average ' + average()} tyyppi={'newLine'}/>
+            <Teksti text={'positive ' + positive() + ' %'} tyyppi={'newLine'}/>
+        </div>
 
 }
 
