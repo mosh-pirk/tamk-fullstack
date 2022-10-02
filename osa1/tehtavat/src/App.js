@@ -1,60 +1,34 @@
+import {useState} from "react";
+
 const App = () => {
-    const course = {
-        name: 'Half Stack application development',
-        parts: [
-            {
-                name: 'Fundamentals of React',
-                exercises: 10
-            },
-            {
-                name: 'Using props to pass data',
-                exercises: 7
-            },
-            {
-                name: 'State of a component',
-                exercises: 14
-            }
-        ]
-    }
+    // tallenna napit omaan tilaansa
+    const [good, setGood] = useState(0)
+    const [neutral, setNeutral] = useState(0)
+    const [bad, setBad] = useState(0)
 
     return (
         <div>
-            <Header course={course.name}/>
-            <Content parts={course.parts}/>
-            <Total parts={course.parts}/>
+            <Teksti text={'give feedback'} bold={true}/>
+            <Button name={'good'} handleClick={() => setGood(good + 1)}/>
+            <Button name={'neutral'} handleClick={() => setNeutral(neutral + 1)}/>
+            <Button name={'bad'} handleClick={() => setBad(bad + 1)}/>
+            <Teksti text={'statics'} bold={true}/>
+            <div><span>good </span>{good}</div>
+            <div><span>neutral </span>{neutral}</div>
+            <div><span>bad </span>{bad}</div>
+
         </div>
     )
 }
+
 
 export default App;
 
-const Header = (props) => {
-    return (
-        <h1>{props.course}</h1>
-    )
+const Teksti = ({text, bold}) => {
+    if (bold) return <h1>{text}</h1>
+    else return <span>{text}</span>
 }
 
-const Content = (props) => {
-    return (
-        <div>
-            {
-                props.parts.map(part => <Part part={part}/>)
-            }
-        </div>
-
-    )
-}
-
-const Part = (props) => {
-    return (
-        <p>{props.part.name} {props.part.exercises}</p>
-    )
-}
-
-const Total = (props) => {
-    return (
-        <div>
-            <p>Number of exercises {props.parts.reduce((x, y) => x + y.exercises, 0)}</p>
-        </div>
-    )
+const Button = ({name, handleClick}) => {
+    return <button onClick={() => handleClick()}> {name} </button>
 }
