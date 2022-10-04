@@ -1,5 +1,5 @@
 # Intelija
 /.idea
 .DS_Store
-memos
+memos*
 package-lock.json
