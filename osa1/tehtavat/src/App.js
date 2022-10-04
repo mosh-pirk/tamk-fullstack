@@ -17,6 +17,11 @@ const App = () => {
                 name: 'State of a component',
                 exercises: 14,
                 id: 3
+            },
+            {
+                name: 'Redux',
+                exercises: 11,
+                id: 4
             }
         ]
     }
@@ -25,7 +30,7 @@ const App = () => {
         <div>
             <Header course={course.name}/>
             <Content parts={course.parts}/>
-            {/* <Total parts={course.parts}/>*/}
+            <Total parts={course.parts}/>
         </div>
     )
 }
@@ -42,7 +47,7 @@ const Content = (props) => {
     return (
         <div>
             {
-                props.parts.map((part, i)  => <Part key={i} part={part}/>)
+                props.parts.map((part, i) => <Part key={i} part={part}/>)
             }
         </div>
 
@@ -55,10 +60,10 @@ const Part = (props) => {
     )
 }
 
-/*const Total = (props) => {
+const Total = (props) => {
     return (
         <div>
-            <p>Number of exercises {props.parts.reduce((x, y) => x + y.exercises, 0)}</p>
+            <h4>total of {props.parts.reduce((x, y) => x + y.exercises, 0)} exercises</h4>
         </div>
     )
-}*/
+}
