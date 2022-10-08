@@ -39,7 +39,10 @@ const App = () => {
         return persons.filter(person => person.name.includes(filter))
     }
 
-    const filteredPersons = persons.filter(person => person.name.includes(filter))
+    const filteredPersons = persons
+        .filter(person => person.name
+            .toLowerCase()
+            .includes(filter.toLowerCase()))
         .map((person, i) => <p key={i}>{
             `${person.name} ${person.number}`
         }</p>)
@@ -48,26 +51,44 @@ const App = () => {
     return (
         <div>
             <h2>Phonebook</h2>
-            <div>
-                filter shown with <input value={filter} onChange={handelFilter}/>
-            </div>
-            <h2>add new</h2>
-            <form>
-                <div>
-                    name: <input value={newName} onChange={handlePerson}/>
-                </div>
-                <div>
-                    number: <input value={newNumber} onChange={handlePhone}/>
-                </div>
-                <div>
-                    <button type="submit" onClick={handleAddPerson}>add</button>
-                </div>
-            </form>
-            <h2>Numbers</h2>
-            <div>{filteredPersons}</div>
+            <Filterd value={filter} onChange={handelFilter}/>
+            <h3>add new</h3>
+            <PersonForm
+                name={newName}
+                changeName={handlePerson}
+                number={newNumber}
+                changeNumber={handlePhone}
+                addPerson={handleAddPerson}/>
+            <h3>Numbers</h3>
+            <Persons persons={filteredPersons}/>
         </div>
     )
 
 }
 
 export default App;
+
+const Filterd = (props) => {
+    return <div>
+        filter shown with <input value={props.value} onChange={props.onChange}/>
+    </div>;
+}
+
+const PersonForm = ({name, number, changeName, changeNumber, addPerson}) => {
+    return <form>
+        <div>
+            name: <input value={name} onChange={changeName}/>
+        </div>
+        <div>
+            number: <input value={number} onChange={changeNumber}/>
+        </div>
+        <div>
+            <button type="submit" onClick={addPerson}>add</button>
+        </div>
+    </form>;
+}
+
+const Persons = ({persons}) => <div>{persons}</div>
+
+
+
