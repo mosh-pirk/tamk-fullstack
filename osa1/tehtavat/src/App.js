@@ -1,89 +1,42 @@
-const App = () => {
-    const courses = [
-        {
-            name: 'Half Stack application development',
-            id: 1,
-            parts: [
-                {
-                    name: 'Fundamentals of React',
-                    exercises: 10,
-                    id: 1
-                },
-                {
-                    name: 'Using props to pass data',
-                    exercises: 7,
-                    id: 2
-                },
-                {
-                    name: 'State of a component',
-                    exercises: 14,
-                    id: 3
-                },
-                {
-                    name: 'Redux',
-                    exercises: 11,
-                    id: 4
-                }
-            ]
-        },
-        {
-            name: 'Node.js',
-            id: 2,
-            parts: [
-                {
-                    name: 'Routing',
-                    exercises: 3,
-                    id: 1
-                },
-                {
-                    name: 'Middlewares',
-                    exercises: 7,
-                    id: 2
-                }
-            ]
-        }
-    ]
+import {useState} from "react";
 
-    return courses.map(course => <Course key={course.id} course={course}/>)
+const App = () => {
+    const [persons, setPersons] = useState([
+        {name: 'Arto Hellas'}
+    ])
+    const [newName, setNewName] = useState('')
+
+    const handleAddPerson = (event) => {
+        event.preventDefault()
+        const person = {
+            name: newName
+        }
+        if (newName.length > 1) setPersons(persons.concat(person))
+        setNewName('')
+    }
+
+    const handlePerson = (e) => {
+        setNewName(e.target.value)
+    }
+
+    return (
+        <div>
+            <h2>Phonebook</h2>
+            <form>
+                <div>
+                    name: <input value={newName} onChange={handlePerson}/>
+                </div>
+                <div>
+                    <button type="submit" onClick={handleAddPerson}>add</button>
+                </div>
+            </form>
+            <h2>Numbers</h2>
+            <div>
+                {persons.map((person, i) => <p key={i}>{person.name}</p>)}
+            </div>
+        </div>
+    )
+
 }
 
 export default App;
-
-const Course = ({course}) => {
-    return <div>
-        <Header course={course.name}/>
-        <Content parts={course.parts}/>
-        <Total parts={course.parts}/>
-    </div>
-}
-
-const Header = (props) => {
-    return (
-        <h1>{props.course}</h1>
-    )
-}
-
-const Content = (props) => {
-    return (
-        <div>
-            {
-                props.parts.map((part, i) => <Part key={i} part={part}/>)
-            }
-        </div>
-
-    )
-}
-
-const Part = (props) => {
-    return (
-        <p>{props.part.name} {props.part.exercises}</p>
-    )
-}
-
-const Total = (props) => {
-    return (
-        <div>
-            <h4>total of {props.parts.reduce((x, y) => x + y.exercises, 0)} exercises</h4>
-        </div>
-    )
-}
