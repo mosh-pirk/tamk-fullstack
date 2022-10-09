@@ -1,97 +1,65 @@
-import {useEffect, useState} from "react";
 import axios from "axios";
+import {useEffect, useState} from "react";
 
 const App = () => {
-    const [persons, setPersons] = useState([])
-    const [newName, setNewName] = useState('')
-    const [newNumber, setNewNumber] = useState('')
+    const [countries, setCountries] = useState([])
     const [filter, setFilter] = useState('')
 
+    const warningText = 'Too many matches, specify another filter'
+    const noMatch = 'No counties maches'
+
     const hook = () => {
-        axios.get('http://localhost:3001/persons')
-            .then(data => setPersons(data.data))
+        axios.get('https://restcountries.com/v3.1/all')
+            .then(data => setCountries(data.data))
     }
 
     useEffect(hook, [])
 
-    const handleAddPerson = (event) => {
-        event.preventDefault()
-        const isFound = persons.find(person => person.name === newName)
-        if (isFound) {
-            window.alert(`${newName} is already added to phonebook`)
-            return
-        }
-        const person = {
-            name: newName,
-            number: newNumber
-        }
-        if (newName.length > 1) setPersons(persons.concat(person))
-        setNewName('')
-        setNewNumber('')
-    }
-
-    const handlePerson = (e) => {
-        setNewName(e.target.value)
-    }
-
-    const handlePhone = (e) => {
-        setNewNumber(e.target.value)
-    }
     const handelFilter = (e) => {
         setFilter(e.target.value)
-        return persons.filter(person => person.name.includes(filter))
     }
 
-    const filteredPersons = persons
-        .filter(person => person.name
+    const filteredCounties = countries
+        .filter(country => country.name.common
             .toLowerCase()
             .includes(filter.toLowerCase()))
-        .map((person, i) => <p key={i}>{
-            `${person.name} ${person.number}`
-        }</p>)
 
+    const componentsLogic = () => {
+        if (filteredCounties.length === 1 ) {
+            return <Country value={filteredCounties[0]} />
+        } else if (filteredCounties.length > 10) {
+            return <p>{warningText}</p>
+        } else if (filteredCounties.length < 10) {
+            return filteredCounties.map((country, i) => <p key={i}>{country.name.common}</p>)
+        } else return <p>{noMatch}</p>
+    }
 
     return (
         <div>
-            <h2>Phonebook</h2>
-            <Filterd value={filter} onChange={handelFilter}/>
-            <h3>add new</h3>
-            <PersonForm
-                name={newName}
-                changeName={handlePerson}
-                number={newNumber}
-                changeNumber={handlePhone}
-                addPerson={handleAddPerson}/>
-            <h3>Numbers</h3>
-            <Persons persons={filteredPersons}/>
+            <div>
+                <input type={'text'} value={filter} onChange={handelFilter}/>
+            </div>
+            {componentsLogic()}
         </div>
     )
-
 }
 
 export default App;
 
-const Filterd = (props) => {
-    return <div>
-        filter shown with <input value={props.value} onChange={props.onChange}/>
-    </div>;
+const Country = ({value}) => {
+
+    const lang = Object.values(value.languages).map((lang, i) => <li key={`lang${i}`}>{lang}</li>)
+
+    return( <div>
+        <h1>{value.name.common}</h1>
+        <p>{`capital ${ value.capital && value.capital.length > 0 ? value?.capital[0] : ''} `}</p>
+        <p>{`area ${ value?.area}`}</p>
+        <h3>language</h3>
+        <ul>
+            {lang}
+        </ul>
+        <div>
+          <img src={value.flags.png} alt="alternatetext" />
+        </div>
+    </div>)
 }
-
-const PersonForm = ({name, number, changeName, changeNumber, addPerson}) => {
-    return <form>
-        <div>
-            name: <input value={name} onChange={changeName}/>
-        </div>
-        <div>
-            number: <input value={number} onChange={changeNumber}/>
-        </div>
-        <div>
-            <button type="submit" onClick={addPerson}>add</button>
-        </div>
-    </form>;
-}
-
-const Persons = ({persons}) => <div>{persons}</div>
-
-
-
