@@ -1,50 +1,28 @@
-
-import axios from "axios";
 import Country from "./Country";
-import {useEffect, useState} from "react";
+import Teksti from "./Teksti";
+import {useState} from "react";
 
-const Countries = () => {
+const Countries = ({countries}) => {
+    const [country, setCountry] = useState(undefined)
 
-    const [countries, setCountries] = useState([])
-    const [filter, setFilter] = useState('')
-
-    const warningText = 'Too many matches, specify another filter'
-    const noMatch = 'No counties maches'
-
-    const hook = () => {
-        axios.get('https://restcountries.com/v3.1/all')
-            .then(data => setCountries(data.data))
+    const handleShowCountry = (countryName) => {
+        const selectedCountry = countries
+            .filter(country => country.name.common === countryName)[0]
+        setCountry(selectedCountry)
     }
 
-    useEffect(hook, [])
+    return (<div> {countries
+        .map((country, i) => <div key={i}>
+            <Teksti text={country.name.common}/>
+            <button key={country.name.common + 'button' + i}
+                    onClick={() => handleShowCountry(country.name.common)}>Show
+            </button>
+        </div>)}
+        {
+            country
+            && <Country value={country}/>}
 
-    const handelFilter = (e) => {
-        setFilter(e.target.value)
-    }
-
-    const filteredCounties = countries
-        .filter(country => country.name.common
-            .toLowerCase()
-            .includes(filter.toLowerCase()))
-
-    const componentsLogic = () => {
-        if (filteredCounties.length === 1 ) {
-            return <Country value={filteredCounties[0]} />
-        } else if (filteredCounties.length > 10) {
-            return <p>{warningText}</p>
-        } else if (filteredCounties.length < 10) {
-            return filteredCounties.map((country, i) => <p key={i}>{country.name.common}</p>)
-        } else return <p>{noMatch}</p>
-    }
-
-    return (
-        <div>
-            <div>
-                <input type={'text'} value={filter} onChange={handelFilter}/>
-            </div>
-            {componentsLogic()}
-        </div>
-    )
+    </div>)
 }
 
 export default Countries
