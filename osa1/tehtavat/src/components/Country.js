@@ -1,4 +1,5 @@
 import Teksti from "./Teksti";
+import Weather from "./Weather";
 
 const Country = ({value}) => {
 
@@ -18,6 +19,8 @@ const Country = ({value}) => {
             <div>
                 <img src={value.flags.png} alt="alternatetext"/>
             </div>
+            <Weather capital={value?.capital[0]} />
+
         </div>)
 }
 
