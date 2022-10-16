@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import axios from "axios";
+import personServer from "./servers/personServer";
 
 const App = () => {
     const [persons, setPersons] = useState([])
@@ -8,13 +8,10 @@ const App = () => {
     const [filter, setFilter] = useState('')
 
     const hook = () => {
-        axios.get('http://localhost:3001/persons')
-            .then(data => setPersons(data.data))
-    }
-
-    const savePerson = (xPerson) => {
-        return axios.post('http://localhost:3001/persons', xPerson)
-            .then(data => data.data)
+        personServer.allPersons().then(persons => {
+            console.log('mohs', persons)
+            setPersons(persons)
+        })
     }
 
     useEffect(hook, [])
@@ -30,7 +27,8 @@ const App = () => {
             name: newName,
             number: newNumber
         }
-        savePerson(person).then(data => {
+        personServer.savePerson(person).then(data => {
+            console.log(data)
             if (newName.length > 1) setPersons(persons.concat(data))
             setNewName('')
             setNewNumber('')
@@ -51,7 +49,7 @@ const App = () => {
     }
 
     const filteredPersons = persons
-        .filter(person => person.name
+        .filter(person => person.name && person.name
             .toLowerCase()
             .includes(filter.toLowerCase()))
         .map((person, i) => <p key={i}>{
