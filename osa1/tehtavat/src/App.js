@@ -7,20 +7,21 @@ const App = () => {
     const [newNumber, setNewNumber] = useState('')
     const [filter, setFilter] = useState('')
 
-    const hook = () => {
+    const getPersons = () => {
         personServer.allPersons().then(persons => {
-            console.log('mohs', persons)
             setPersons(persons)
         })
     }
-
-    useEffect(hook, [])
-
-    const handleAddPerson = (event) => {
+    const addPerson = (event) => {
         event.preventDefault()
+
         const isFound = persons.find(person => person.name === newName)
         if (isFound) {
             window.alert(`${newName} is already added to phonebook`)
+            return
+        }
+        if (newName.length < 3) {
+            window.alert('Add valid name')
             return
         }
         const person = {
@@ -28,13 +29,25 @@ const App = () => {
             number: newNumber
         }
         personServer.savePerson(person).then(data => {
-            console.log(data)
             if (newName.length > 1) setPersons(persons.concat(data))
             setNewName('')
             setNewNumber('')
         })
-
     }
+
+    const deletePerson = (id) => {
+        const xPersons = [...persons]
+        const personToDelete = xPersons.find(person => person.id === id)
+        if (window.confirm(`Delete ${personToDelete.name}`)) {
+            personServer.deletePerson(id)
+                .then(() => {
+                    const filteredXpersons = xPersons.filter(person => id !== person.id)
+                    setPersons(filteredXpersons)
+                }).catch(err => window.alert(err))
+        }
+    }
+
+    useEffect(getPersons, [])
 
     const handlePerson = (e) => {
         setNewName(e.target.value)
@@ -52,9 +65,7 @@ const App = () => {
         .filter(person => person.name && person.name
             .toLowerCase()
             .includes(filter.toLowerCase()))
-        .map((person, i) => <p key={i}>{
-            `${person.name} ${person.number}`
-        }</p>)
+        .map(person => <Person key={person.id} person={person} handleDelete={deletePerson}/>)
 
 
     return (
@@ -67,12 +78,11 @@ const App = () => {
                 changeName={handlePerson}
                 number={newNumber}
                 changeNumber={handlePhone}
-                addPerson={handleAddPerson}/>
+                addPerson={addPerson}/>
             <h3>Numbers</h3>
             <Persons persons={filteredPersons}/>
         </div>
     )
-
 }
 
 export default App;
@@ -99,5 +109,10 @@ const PersonForm = ({name, number, changeName, changeNumber, addPerson}) => {
 
 const Persons = ({persons}) => <div>{persons}</div>
 
-
-
+const Person = ({person, handleDelete}) =>
+    <p key={person.id}>
+        {`${person.name} ${person.number}`} {
+        <button
+            key={person.id + 'button'}
+            onClick={() => handleDelete(person.id)}
+        > delete </button>}</p>
