@@ -14,25 +14,30 @@ const App = () => {
     }
     const addPerson = (event) => {
         event.preventDefault()
+        const xPersons = [...persons]
+        const foundedPerson = xPersons.find(person => person.name === newName)
+        if (foundedPerson) {
+            window.alert(`${newName} is already added to phonebook, replace the old number with a new one`)
+            foundedPerson.number = newNumber
 
-        const isFound = persons.find(person => person.name === newName)
-        if (isFound) {
-            window.alert(`${newName} is already added to phonebook`)
-            return
+            personServer.editPerson(foundedPerson.id, foundedPerson).then(() => {
+                setPersons(xPersons)
+            })
+        } else {
+            if (newName.length < 3) {
+                window.alert('Add valid name')
+                return
+            }
+            const person = {
+                name: newName,
+                number: newNumber
+            }
+            personServer.savePerson(person).then(data => {
+                if (newName.length > 1) setPersons(persons.concat(data))
+                setNewName('')
+                setNewNumber('')
+            })
         }
-        if (newName.length < 3) {
-            window.alert('Add valid name')
-            return
-        }
-        const person = {
-            name: newName,
-            number: newNumber
-        }
-        personServer.savePerson(person).then(data => {
-            if (newName.length > 1) setPersons(persons.concat(data))
-            setNewName('')
-            setNewNumber('')
-        })
     }
 
     const deletePerson = (id) => {
