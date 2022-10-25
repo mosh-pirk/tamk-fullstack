@@ -51,7 +51,10 @@ const App = () => {
                 .then(() => {
                     const filteredXpersons = xPersons.filter(person => id !== person.id)
                     setPersons(filteredXpersons)
-                }).catch(err => window.alert(err))
+                }).catch(err => {
+                showMessgae(`Information of ${personToDelete.name} has already been removed from server` , 'error')
+                getPersons()
+            })
         }
     }
 
