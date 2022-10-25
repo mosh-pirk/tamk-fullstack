@@ -6,6 +6,7 @@ const App = () => {
     const [newName, setNewName] = useState('')
     const [newNumber, setNewNumber] = useState('')
     const [filter, setFilter] = useState('')
+    const [message, setMessage] = useState(null)
 
     const getPersons = () => {
         personServer.allPersons().then(persons => {
@@ -20,8 +21,9 @@ const App = () => {
             window.alert(`${newName} is already added to phonebook, replace the old number with a new one`)
             foundedPerson.number = newNumber
 
-            personServer.editPerson(foundedPerson.id, foundedPerson).then(() => {
+            personServer.editPerson(foundedPerson.id, foundedPerson).then((data) => {
                 setPersons(xPersons)
+                showMessgae(`Add ${data.name}`, 'note');
             })
         } else {
             if (newName.length < 3) {
@@ -34,6 +36,7 @@ const App = () => {
             }
             personServer.savePerson(person).then(data => {
                 if (newName.length > 1) setPersons(persons.concat(data))
+                showMessgae(`Add ${data.name}`, 'note');
                 setNewName('')
                 setNewNumber('')
             })
@@ -72,10 +75,16 @@ const App = () => {
             .includes(filter.toLowerCase()))
         .map(person => <Person key={person.id} person={person} handleDelete={deletePerson}/>)
 
-
+    const showMessgae = (str, style) => {
+        setMessage({note: str, style: style})
+        setTimeout(() => {
+            setMessage(null);
+            }, 5000);
+    }
     return (
         <div>
             <h2>Phonebook</h2>
+            {message ? <Notification message={message.note} style={message.style}/> : <></>}
             <Filterd value={filter} onChange={handelFilter}/>
             <h3>add new</h3>
             <PersonForm
@@ -121,3 +130,14 @@ const Person = ({person, handleDelete}) =>
             key={person.id + 'button'}
             onClick={() => handleDelete(person.id)}
         > delete </button>}</p>
+
+const Notification = ({message, style}) => {
+    if (message === null) {
+        return null
+    }
+    return (
+        <div className={style}>
+            {message}
+        </div>
+    )
+}
